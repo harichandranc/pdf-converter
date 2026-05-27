@@ -4,39 +4,29 @@ import { useEffect } from "react";
 
 export default function BannerAd() {
   useEffect(() => {
-    const containerId =
-      "container-82aa08359e3c52e80c2b278ef851b22c";
-
-    const existingScript =
-      document.getElementById(
-        "adsterra-banner-script"
-      );
-
-    // PREVENT DUPLICATE
-    if (existingScript) return;
-
-    const script =
-      document.createElement("script");
-
-    script.id =
-      "adsterra-banner-script";
-
-    script.src =
-      "https://recollectsideway.com/82aa08359e3c52e80c2b278ef851b22c/invoke.js";
-
-    script.async = true;
-
-    script.setAttribute(
-      "data-cfasync",
-      "false"
-    );
-
     const container =
       document.getElementById(
-        containerId
+        "container-82aa08359e3c52e80c2b278ef851b22c"
       );
 
-    if (container) {
+    // PREVENT DUPLICATE ADS
+    if (
+      container &&
+      container.childNodes.length === 0
+    ) {
+      const script =
+        document.createElement("script");
+
+      script.src =
+        "https://recollectsideway.com/82aa08359e3c52e80c2b278ef851b22c/invoke.js";
+
+      script.async = true;
+
+      script.setAttribute(
+        "data-cfasync",
+        "false"
+      );
+
       container.appendChild(script);
     }
   }, []);

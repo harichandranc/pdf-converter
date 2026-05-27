@@ -138,7 +138,7 @@ export default function Navbar() {
             </button>
 
             {/* DROPDOWN */}
-            <div className="absolute left-0 top-full pt-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+            <div className="absolute left-1/2 -translate-x-1/2 top-full pt-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <div className="w-[900px] bg-white rounded-3xl border border-gray-200 shadow-2xl p-8">
                 <div className="grid grid-cols-4 gap-8">
                   {/* ORGANIZE */}
@@ -337,7 +337,7 @@ export default function Navbar() {
 
             {/* SUB MENU */}
             {pdfMenuOpen && (
-              <div className="pl-4 pb-4 space-y-3">
+              <div className="pb-4 space-y-3 flex flex-col items-center text-center">
                 {[
                   ...organizeTools,
                   ...convertTools,
@@ -350,7 +350,7 @@ export default function Navbar() {
                     onClick={() =>
                       setMenuOpen(false)
                     }
-                    className="flex items-center gap-3 py-3 text-gray-700 hover:text-cyan-500 transition"
+                    className="flex items-center justify-center gap-3 py-3 text-gray-700 hover:text-cyan-500 transition w-full"
                   >
                     <span className="text-xl">
                       {tool.icon}

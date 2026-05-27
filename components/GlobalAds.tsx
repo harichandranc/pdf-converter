@@ -1,11 +1,16 @@
 "use client";
 
-import SocialBarAd from "./SocialBarAd";
+import Script from "next/script";
 
 export default function GlobalAds() {
   return (
     <>
-      <SocialBarAd />
+      {/* SOCIAL BAR AD */}
+      <Script
+        id="adsterra-social"
+        strategy="afterInteractive"
+        src="https://recollectsideway.com/0c/97/45/0c97457551e6950183e8afdd87b58aad.js"
+      />
     </>
   );
 }

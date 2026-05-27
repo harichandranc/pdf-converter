@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { PDFDocument } from "pdf-lib";
+import BannerAd from "@/components/BannerAd";
 
 export default function CompressPDFPage() {
   const [file, setFile] =
@@ -18,6 +24,47 @@ export default function CompressPDFPage() {
 
   const [loading, setLoading] =
     useState(false);
+
+  const reviewRef =
+    useRef<HTMLDivElement | null>(
+      null
+    );
+
+  // FORCE SOCIAL BAR AD LOAD
+  useEffect(() => {
+    const existingScript =
+      document.getElementById(
+        "adsterra-social-bar"
+      );
+
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    const script =
+      document.createElement("script");
+
+    script.id =
+      "adsterra-social-bar";
+
+    script.src =
+      "//pl26710309.profitableratecpm.com/82aa08359e3c52e80c2b278ef851b22c/invoke.js";
+
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    return () => {
+      const oldScript =
+        document.getElementById(
+          "adsterra-social-bar"
+        );
+
+      if (oldScript) {
+        oldScript.remove();
+      }
+    };
+  }, []);
 
   // FORMAT SIZE
   const formatSize = (bytes: number) => {
@@ -46,6 +93,16 @@ export default function CompressPDFPage() {
     );
 
     setAfterSize("");
+
+    // SCROLL TO REVIEW SECTION
+    setTimeout(() => {
+      reviewRef.current?.scrollIntoView(
+        {
+          behavior: "smooth",
+          block: "start",
+        }
+      );
+    }, 300);
   };
 
   // COMPRESS PDF
@@ -120,7 +177,9 @@ export default function CompressPDFPage() {
         document.createElement("a");
 
       a.href = url;
-      a.download = "compressed.pdf";
+
+      a.download =
+        "compressed.pdf";
 
       a.click();
 
@@ -128,7 +187,9 @@ export default function CompressPDFPage() {
     } catch (error) {
       console.error(error);
 
-      alert("Failed to compress PDF");
+      alert(
+        "Failed to compress PDF"
+      );
     } finally {
       setLoading(false);
     }
@@ -196,9 +257,17 @@ export default function CompressPDFPage() {
               />
             </label>
 
-            {/* FILE INFO */}
+            {/* NATIVE BANNER AD */}
+            <div className="mt-10">
+              <BannerAd />
+            </div>
+
+            {/* FILE REVIEW */}
             {file && (
-              <div className="mt-10">
+              <div
+                ref={reviewRef}
+                className="mt-10"
+              >
                 {/* FILE CARD */}
                 <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
