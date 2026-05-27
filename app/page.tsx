@@ -1,76 +1,17 @@
-import ToolCard from "@/components/ToolCard";
 import CategoryTabs from "@/components/CategoryTabs";
+import BannerAd from "@/components/BannerAd";
 
 export default function Home() {
-  const tools = [
-    {
-      title: "Merge PDF",
-      description:
-        "Combine multiple PDF files into one document quickly and securely.",
-      icon: "📚",
-      href: "/merge-pdf",
-    },
-    {
-      title: "Split PDF",
-      description:
-        "Extract pages from PDFs and create separate files instantly.",
-      icon: "✂️",
-      href: "/split-pdf",
-    },
-    {
-      title: "Compress PDF",
-      description:
-        "Reduce PDF file size while maintaining quality.",
-      icon: "🗜️",
-      href: "/compress-pdf",
-    },
-    {
-      title: "Image to PDF",
-      description:
-        "Convert JPG and PNG images into PDF files easily.",
-      icon: "🖼️",
-      href: "/image-to-pdf",
-    },
-    {
-      title: "PDF to JPG",
-      description:
-        "Convert PDF pages into high-quality JPG images.",
-      icon: "📄",
-      href: "/pdf-to-jpg",
-    },
-    {
-      title: "Word to PDF",
-      description:
-        "Convert DOC and DOCX files into PDF documents.",
-      icon: "📝",
-      href: "/word-to-pdf",
-    },
-    {
-      title: "Rotate PDF",
-      description:
-        "Rotate PDF pages permanently and save the updated file.",
-      icon: "🔄",
-      href: "/rotate-pdf",
-    },
-    {
-      title: "Delete PDF Pages",
-      description:
-        "Remove unwanted pages from your PDF documents.",
-      icon: "🗑️",
-      href: "/delete-pages",
-    },
-  ];
-
   return (
     <main className="bg-[#f7f7fb] min-h-screen">
       {/* HERO SECTION */}
       <section className="relative overflow-hidden py-28 px-4">
         {/* BACKGROUND */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
 
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-200 rounded-full blur-3xl opacity-30"></div>
 
-        <div className="relative max-w-6xl mx-auto text-center">
+        <div className="relative max-w-7xl mx-auto text-center">
           {/* BADGE */}
           <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
             ⚡ Fast & Secure PDF Tools
@@ -85,65 +26,53 @@ export default function Home() {
 
           {/* DESCRIPTION */}
           <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Merge, split, compress, convert and
-            manage PDF files online for free with
-            professional tools directly in your
-            browser.
+            Merge, split, compress, convert,
+            rotate, protect and manage PDF
+            files online for free using fast
+            professional tools.
           </p>
+
+          {/* BUTTONS */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mt-12">
+            <a
+              href="#explore-tools"
+              className="bg-black hover:opacity-90 text-white font-bold px-10 py-5 rounded-2xl text-lg transition"
+            >
+              Explore Tools
+            </a>
+
+            <a
+              href="/merge-pdf"
+              className="bg-white border border-gray-300 hover:border-black text-gray-900 font-bold px-10 py-5 rounded-2xl text-lg transition"
+            >
+              Start Free
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* CATEGORY TABS */}
-      <section className="px-4">
+      {/* CATEGORY + TOOLS */}
+      <section
+        id="explore-tools"
+        className="px-4 py-10"
+      >
         <div className="max-w-7xl mx-auto">
           <CategoryTabs />
         </div>
       </section>
 
-      {/* TOOL GRID */}
-      <section
-        id="explore-tools"
-        className="py-20 px-4 "
-      >
-        <div className="max-w-7xl mx-auto">
-          {/* SECTION HEADER */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
-              🚀 Explore PDF Tools
-            </div>
-
-            <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6">
-              Powerful PDF
-              <br />
-              Tools in One Place
-            </h2>
-
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Access fast, secure and easy-to-use
-              PDF tools for merging, splitting,
-              compressing and converting files.
-            </p>
-          </div>
-
-          {/* TOOL CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {tools.map((tool) => (
-              <ToolCard
-                key={tool.title}
-                title={tool.title}
-                description={tool.description}
-                icon={tool.icon}
-                href={tool.href}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* BANNER AD */}
+      <BannerAd />
 
       {/* FEATURES */}
       <section className="pb-24 px-4">
         <div className="max-w-7xl mx-auto">
+          {/* HEADER */}
           <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
+              💎 Why Choose Us
+            </div>
+
             <h2 className="text-5xl font-extrabold text-gray-900 mb-6">
               Why Choose PDF Converter?
             </h2>
@@ -157,7 +86,7 @@ export default function Home() {
           {/* FEATURES GRID */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* FAST */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition">
+            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition duration-300">
               <div className="text-6xl mb-6">
                 ⚡
               </div>
@@ -167,13 +96,14 @@ export default function Home() {
               </h3>
 
               <p className="text-gray-600 text-lg leading-relaxed">
-                Process PDF files instantly
-                directly in your browser.
+                Upload and process PDF files
+                instantly using optimized server
+                processing.
               </p>
             </div>
 
             {/* SECURE */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition">
+            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition duration-300">
               <div className="text-6xl mb-6">
                 🔒
               </div>
@@ -183,13 +113,14 @@ export default function Home() {
               </h3>
 
               <p className="text-gray-600 text-lg leading-relaxed">
-                Your files stay private and are
-                never stored permanently.
+                Your uploaded files are protected
+                and automatically deleted after
+                processing.
               </p>
             </div>
 
             {/* FREE */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition">
+            <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition duration-300">
               <div className="text-6xl mb-6">
                 💯
               </div>
@@ -199,7 +130,7 @@ export default function Home() {
               </h3>
 
               <p className="text-gray-600 text-lg leading-relaxed">
-                Use powerful PDF tools online
+                Use all powerful PDF tools online
                 completely free without signup.
               </p>
             </div>

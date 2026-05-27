@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function WordToPDFPage() {
+export default function PDFToWordPage() {
   const [file, setFile] =
     useState<File | null>(null);
 
@@ -21,10 +21,10 @@ export default function WordToPDFPage() {
     setFile(selectedFile);
   };
 
-  // CONVERT WORD TO PDF
-  const convertToPDF = async () => {
+  // CONVERT PDF TO WORD
+  const convertToWord = async () => {
     if (!file) {
-      alert("Select Word file");
+      alert("Select PDF file");
       return;
     }
 
@@ -38,7 +38,7 @@ export default function WordToPDFPage() {
 
       // VPS API CALL
       const response = await fetch(
-        "http://147.93.110.58:3000/convert/word-to-pdf",
+        "http://147.93.110.58:3000/convert/pdf-to-word",
         {
           method: "POST",
           body: formData,
@@ -55,7 +55,7 @@ export default function WordToPDFPage() {
         );
       }
 
-      // DOWNLOAD PDF
+      // DOWNLOAD DOCX
       const link =
         document.createElement("a");
 
@@ -63,7 +63,7 @@ export default function WordToPDFPage() {
 
       link.setAttribute(
         "download",
-        "converted.pdf"
+        "converted.docx"
       );
 
       document.body.appendChild(link);
@@ -75,7 +75,7 @@ export default function WordToPDFPage() {
       console.error(error);
 
       alert(
-        "Word to PDF conversion failed"
+        "PDF to Word conversion failed"
       );
     } finally {
       setLoading(false);
@@ -95,20 +95,19 @@ export default function WordToPDFPage() {
           {/* HEADER */}
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
-              📝 Smart Word Converter
+              📄 Smart PDF Converter
             </div>
 
             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
-              Convert Word
+              Convert PDF
               <br />
-              to PDF
+              to Word
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Convert DOC and DOCX files into
-              professional PDF documents
-              instantly with original layout
-              preserved.
+              Convert PDF files into editable
+              Word documents instantly while
+              preserving formatting and layout.
             </p>
           </div>
 
@@ -116,30 +115,30 @@ export default function WordToPDFPage() {
           <div className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 md:p-12">
             {/* FILE PICKER */}
             <label
-              htmlFor="word-upload"
+              htmlFor="pdf-upload"
               className="border-2 border-dashed border-cyan-300 hover:border-cyan-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
             >
               <div className="text-7xl mb-6">
-                📄
+                📑
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Upload Word File
+                Upload PDF File
               </h2>
 
               <p className="text-gray-500 text-lg text-center mb-8">
-                Select DOC or DOCX file to
-                convert into PDF
+                Select PDF file to convert into
+                editable Word document
               </p>
 
               <div className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
-                Choose File
+                Choose PDF
               </div>
 
               <input
-                id="word-upload"
+                id="pdf-upload"
                 type="file"
-                accept=".doc,.docx"
+                accept=".pdf"
                 onChange={handleFile}
                 className="hidden"
               />
@@ -172,25 +171,16 @@ export default function WordToPDFPage() {
                   </div>
                 </div>
 
-                {/* INFO BOX */}
-                <div className="mt-8 bg-cyan-50 border border-cyan-100 rounded-2xl p-5">
-                  <p className="text-cyan-800 font-medium leading-relaxed">
-                    💡 Original formatting,
-                    tables, images and layout
-                    will be preserved during
-                    conversion.
-                  </p>
-                </div>
 
                 {/* BUTTON */}
                 <button
-                  onClick={convertToPDF}
+                  onClick={convertToWord}
                   disabled={loading}
                   className="w-full mt-10 bg-black hover:opacity-90 disabled:opacity-50 text-white font-bold text-xl py-5 rounded-2xl transition"
                 >
                   {loading
                     ? "Converting..."
-                    : "Convert to PDF"}
+                    : "Convert to Word"}
                 </button>
               </div>
             )}

@@ -1,53 +1,43 @@
 import Link from "next/link";
 
-type Props = {
+interface ToolCardProps {
   title: string;
   description: string;
   icon: string;
   href: string;
-};
+}
 
 export default function ToolCard({
   title,
   description,
   icon,
   href,
-}: Props) {
+}: ToolCardProps) {
   return (
-    <Link
-      href={href}
-      className="group block h-full"
-    >
-      <div className="relative h-full overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-300 hover:shadow-2xl">
-        {/* TOP GRADIENT */}
-        <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-cyan-400 to-blue-500"></div>
-
+    <Link href={href}>
+      <div className="group bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-2xl hover:-translate-y-1 transition duration-300 h-full flex flex-col">
         {/* ICON */}
-        <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-cyan-50 text-5xl transition-transform duration-300 group-hover:scale-110">
+        <div className="w-24 h-24 rounded-3xl bg-cyan-50 flex items-center justify-center text-5xl mb-8 group-hover:scale-110 transition">
           {icon}
         </div>
 
         {/* TITLE */}
-        <h3 className="mb-4 text-3xl font-extrabold text-gray-900 transition group-hover:text-cyan-600">
+        <h3 className="text-4xl font-extrabold text-gray-900 mb-5 leading-tight">
           {title}
         </h3>
 
         {/* DESCRIPTION */}
-        <p className="text-lg leading-relaxed text-gray-600">
+        <p className="text-gray-600 text-xl leading-relaxed flex-grow">
           {description}
         </p>
 
         {/* BUTTON */}
-        <div className="mt-8 flex items-center gap-2 font-bold text-cyan-600">
+        <div className="mt-8 inline-flex items-center gap-2 text-cyan-600 font-bold text-xl">
           Use Tool
-
-          <span className="transition-transform duration-300 group-hover:translate-x-2">
+          <span className="group-hover:translate-x-1 transition">
             →
           </span>
         </div>
-
-        {/* HOVER GLOW */}
-        <div className="absolute -bottom-24 -right-24 h-40 w-40 rounded-full bg-cyan-100 opacity-0 blur-3xl transition duration-500 group-hover:opacity-100"></div>
       </div>
     </Link>
   );

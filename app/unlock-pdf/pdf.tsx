@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 
-export default function WordToPDFPage() {
+export default function UnlockPDFPage() {
   const [file, setFile] =
     useState<File | null>(null);
+
+  const [password, setPassword] =
+    useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -21,10 +24,15 @@ export default function WordToPDFPage() {
     setFile(selectedFile);
   };
 
-  // CONVERT WORD TO PDF
-  const convertToPDF = async () => {
+  // UNLOCK PDF
+  const unlockPDF = async () => {
     if (!file) {
-      alert("Select Word file");
+      alert("Select PDF file");
+      return;
+    }
+
+    if (!password.trim()) {
+      alert("Enter PDF password");
       return;
     }
 
@@ -36,9 +44,14 @@ export default function WordToPDFPage() {
 
       formData.append("file", file);
 
+      formData.append(
+        "password",
+        password
+      );
+
       // VPS API CALL
       const response = await fetch(
-        "http://147.93.110.58:3000/convert/word-to-pdf",
+        "http://147.93.110.58:3000/pdf/unlock",
         {
           method: "POST",
           body: formData,
@@ -51,7 +64,7 @@ export default function WordToPDFPage() {
       if (!data.success) {
         throw new Error(
           data.error ||
-            "Conversion failed"
+            "Unlock PDF failed"
         );
       }
 
@@ -63,7 +76,7 @@ export default function WordToPDFPage() {
 
       link.setAttribute(
         "download",
-        "converted.pdf"
+        "unlocked.pdf"
       );
 
       document.body.appendChild(link);
@@ -74,9 +87,7 @@ export default function WordToPDFPage() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        "Word to PDF conversion failed"
-      );
+      alert("Unlock PDF failed");
     } finally {
       setLoading(false);
     }
@@ -87,28 +98,27 @@ export default function WordToPDFPage() {
       {/* HERO */}
       <section className="relative overflow-hidden py-24 px-4">
         {/* BACKGROUND */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
 
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="relative max-w-5xl mx-auto">
           {/* HEADER */}
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
-              📝 Smart Word Converter
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-6 py-3 rounded-full font-semibold mb-8">
+              🔓 Smart PDF Unlocker
             </div>
 
             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
-              Convert Word
+              Unlock PDF
               <br />
-              to PDF
+              Password Protection
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Convert DOC and DOCX files into
-              professional PDF documents
-              instantly with original layout
-              preserved.
+              Remove password protection from
+              your PDF instantly and download
+              unlocked PDF file securely.
             </p>
           </div>
 
@@ -116,30 +126,30 @@ export default function WordToPDFPage() {
           <div className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 md:p-12">
             {/* FILE PICKER */}
             <label
-              htmlFor="word-upload"
-              className="border-2 border-dashed border-cyan-300 hover:border-cyan-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
+              htmlFor="pdf-upload"
+              className="border-2 border-dashed border-yellow-300 hover:border-yellow-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
             >
               <div className="text-7xl mb-6">
-                📄
+                📂
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Upload Word File
+                Upload Locked PDF
               </h2>
 
               <p className="text-gray-500 text-lg text-center mb-8">
-                Select DOC or DOCX file to
-                convert into PDF
+                Select password protected PDF
+                file to unlock
               </p>
 
-              <div className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
-                Choose File
+              <div className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
+                Choose PDF
               </div>
 
               <input
-                id="word-upload"
+                id="pdf-upload"
                 type="file"
-                accept=".doc,.docx"
+                accept=".pdf"
                 onChange={handleFile}
                 className="hidden"
               />
@@ -166,31 +176,40 @@ export default function WordToPDFPage() {
                       </p>
                     </div>
 
-                    <div className="bg-cyan-100 text-cyan-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
+                    <div className="bg-yellow-100 text-yellow-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
                       Ready
                     </div>
                   </div>
                 </div>
 
-                {/* INFO BOX */}
-                <div className="mt-8 bg-cyan-50 border border-cyan-100 rounded-2xl p-5">
-                  <p className="text-cyan-800 font-medium leading-relaxed">
-                    💡 Original formatting,
-                    tables, images and layout
-                    will be preserved during
-                    conversion.
-                  </p>
+                {/* PASSWORD INPUT */}
+                <div className="mt-8">
+                  <label className="block text-lg font-semibold text-gray-700 mb-3">
+                    PDF Password
+                  </label>
+
+                  <input
+                    type="password"
+                    placeholder="Enter PDF password"
+                    value={password}
+                    onChange={(e) =>
+                      setPassword(
+                        e.target.value
+                      )
+                    }
+                    className="w-full border border-gray-300 rounded-2xl px-5 py-4 text-lg outline-none focus:border-yellow-500"
+                  />
                 </div>
 
                 {/* BUTTON */}
                 <button
-                  onClick={convertToPDF}
+                  onClick={unlockPDF}
                   disabled={loading}
                   className="w-full mt-10 bg-black hover:opacity-90 disabled:opacity-50 text-white font-bold text-xl py-5 rounded-2xl transition"
                 >
                   {loading
-                    ? "Converting..."
-                    : "Convert to PDF"}
+                    ? "Unlocking..."
+                    : "Unlock PDF"}
                 </button>
               </div>
             )}
