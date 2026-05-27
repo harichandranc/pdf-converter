@@ -35,23 +35,19 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* LOGO */}
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center"
         >
-          <div className="w-11 h-11 rounded-2xl bg-cyan-500 flex items-center justify-center text-black font-extrabold text-xl">
-            P
-          </div>
-
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 leading-none">
               PDF Converter
             </h1>
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 mt-1">
               Online PDF Tools
             </p>
           </div>
@@ -70,22 +66,22 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* RIGHT BUTTONS */}
+        {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
           {/* ALL TOOLS */}
-          <Link
-            href="/"
+          <a
+            href="/#explore-tools"
             className="hidden md:flex bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-3 rounded-xl font-bold transition"
           >
             All Tools
-          </Link>
+          </a>
 
           {/* MOBILE MENU BUTTON */}
           <button
             onClick={() =>
               setMenuOpen(!menuOpen)
             }
-            className="lg:hidden w-12 h-12 rounded-xl border border-gray-300 flex items-center justify-center"
+            className="lg:hidden w-12 h-12 rounded-xl border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition"
           >
             {menuOpen ? (
               <span className="text-2xl">
@@ -117,15 +113,16 @@ export default function Navbar() {
               </Link>
             ))}
 
-            <Link
-              href="/"
+            {/* MOBILE ALL TOOLS */}
+            <a
+              href="/#explore-tools"
               onClick={() =>
                 setMenuOpen(false)
               }
               className="bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-4 rounded-xl font-bold text-center transition"
             >
               View All Tools
-            </Link>
+            </a>
           </div>
         </div>
       )}

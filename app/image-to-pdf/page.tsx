@@ -4,23 +4,33 @@ import { useState } from "react";
 import { jsPDF } from "jspdf";
 
 export default function Page() {
-  const [images, setImages] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [images, setImages] =
+    useState<File[]>([]);
+
+  const [loading, setLoading] =
+    useState(false);
 
   const handleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (e.target.files) {
-      setImages(Array.from(e.target.files));
+      setImages(
+        Array.from(e.target.files)
+      );
     }
   };
 
-  const readFile = (file: File): Promise<string> => {
+  const readFile = (
+    file: File
+  ): Promise<string> => {
     return new Promise((resolve) => {
-      const reader = new FileReader();
+      const reader =
+        new FileReader();
 
       reader.onload = () => {
-        resolve(reader.result as string);
+        resolve(
+          reader.result as string
+        );
       };
 
       reader.readAsDataURL(file);
@@ -34,20 +44,28 @@ export default function Page() {
 
     const pdf = new jsPDF();
 
-    for (let i = 0; i < images.length; i++) {
-      const imageData = await readFile(images[i]);
+    for (
+      let i = 0;
+      i < images.length;
+      i++
+    ) {
+      const imageData =
+        await readFile(images[i]);
 
       const img = new Image();
+
       img.src = imageData;
 
       await new Promise((resolve) => {
         img.onload = resolve;
       });
 
-      const width = pdf.internal.pageSize.getWidth();
+      const width =
+        pdf.internal.pageSize.getWidth();
 
       const height =
-        (img.height * width) / img.width;
+        (img.height * width) /
+        img.width;
 
       if (i !== 0) {
         pdf.addPage();
@@ -69,125 +87,150 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-10 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold text-black mb-4">
-            Image to PDF
-          </h1>
+    <main className="bg-[#f7f7fb] min-h-screen">
+      {/* HERO */}
+      <section className="relative overflow-hidden py-24 px-4">
+        {/* BACKGROUND */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
 
-          <p className="text-gray-600 text-lg">
-            Convert JPG, PNG and other images into PDF instantly
-          </p>
-        </div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
 
-        {/* Upload Box */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <label className="border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer hover:border-black transition">
-            <div className="text-6xl mb-4">
-              📄
+        <div className="relative max-w-6xl mx-auto">
+          {/* HEADER */}
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
+              🖼️ Smart Image Converter
             </div>
 
-            <h2 className="text-2xl font-semibold mb-2">
-              Upload Images
-            </h2>
+            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
+              Convert Images
+              <br />
+              into PDF Files
+            </h1>
 
-            <p className="text-gray-500 mb-4 text-center">
-              Select multiple images to convert into one PDF
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Convert JPG, PNG and other image
+              formats into professional PDF
+              documents instantly.
             </p>
+          </div>
 
-            <span className="bg-black text-white px-6 py-3 rounded-xl">
-              Choose Images
-            </span>
+          {/* MAIN BOX */}
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-xl p-8 md:p-12">
+            {/* UPLOAD BOX */}
+            <label className="border-2 border-dashed border-cyan-300 hover:border-cyan-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer">
+              <div className="text-7xl mb-6">
+                📄
+              </div>
 
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Upload Images
+              </h2>
 
-          {/* File Count */}
-          {images.length > 0 && (
-            <div className="mt-6 text-center">
-              <span className="bg-gray-100 px-4 py-2 rounded-full text-gray-700">
-                {images.length} image(s) selected
-              </span>
-            </div>
-          )}
+              <p className="text-gray-500 text-lg text-center mb-8">
+                Select multiple images to
+                combine into one PDF file
+              </p>
 
-          {/* Image Preview Grid */}
-          {images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10">
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-50 rounded-2xl p-3 shadow-sm"
-                >
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt={image.name}
-                    className="w-full h-40 object-cover rounded-xl"
-                  />
+              <div className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
+                Choose Images
+              </div>
 
-                  <p className="mt-3 text-sm text-center truncate">
-                    {image.name}
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={
+                  handleImageChange
+                }
+                className="hidden"
+              />
+            </label>
+
+            {/* FILE INFO */}
+            {images.length > 0 && (
+              <div className="mt-10">
+                {/* TOP INFO */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+                  <div>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                      Selected Images
+                    </h3>
+
+                    <p className="text-gray-600 text-lg">
+                      {images.length} images
+                      ready for conversion
+                    </p>
+                  </div>
+
+                  <div className="bg-cyan-100 text-cyan-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
+                    Ready to Convert
+                  </div>
+                </div>
+
+                {/* IMAGE GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {images.map(
+                    (image, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-50 border border-gray-200 rounded-3xl overflow-hidden hover:shadow-xl transition"
+                      >
+                        <div className="aspect-square overflow-hidden">
+                          <img
+                            src={URL.createObjectURL(
+                              image
+                            )}
+                            alt={image.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="p-5">
+                          <h4 className="font-bold text-gray-900 truncate text-lg">
+                            {image.name}
+                          </h4>
+
+                          <p className="text-gray-500 mt-2">
+                            {(
+                              image.size /
+                              1024 /
+                              1024
+                            ).toFixed(
+                              2
+                            )}{" "}
+                            MB
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                {/* INFO BOX */}
+                <div className="mt-8 bg-cyan-50 border border-cyan-100 rounded-2xl p-5">
+                  <p className="text-cyan-800 font-medium leading-relaxed">
+                    💡 Images will appear in the
+                    PDF in the same order shown
+                    above.
                   </p>
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* Convert Button */}
-          {images.length > 0 && (
-            <button
-              onClick={createPdf}
-              disabled={loading}
-              className="w-full mt-10 bg-black text-white py-4 rounded-2xl text-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
-            >
-              {loading
-                ? "Converting..."
-                : "Convert to PDF"}
-            </button>
-          )}
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-          <div className="bg-white rounded-2xl p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">
-              Fast Conversion
-            </h3>
-
-            <p className="text-gray-600">
-              Convert images into PDFs instantly in your browser.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">
-              Secure
-            </h3>
-
-            <p className="text-gray-600">
-              Your files never leave your device.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">
-              Free to Use
-            </h3>
-
-            <p className="text-gray-600">
-              Unlimited image to PDF conversions for free.
-            </p>
+                {/* BUTTON */}
+                <button
+                  onClick={createPdf}
+                  disabled={loading}
+                  className="w-full mt-10 bg-black hover:opacity-90 disabled:opacity-50 text-white font-bold text-xl py-5 rounded-2xl transition"
+                >
+                  {loading
+                    ? "Converting..."
+                    : "Convert to PDF"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

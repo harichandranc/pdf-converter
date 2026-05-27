@@ -90,23 +90,6 @@ export default function Home() {
             professional tools directly in your
             browser.
           </p>
-
-          {/* BUTTONS */}
-          <div className="flex flex-col sm:flex-row justify-center gap-5 mt-12">
-            <a
-              href="/merge-pdf"
-              className="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-5 rounded-2xl text-lg font-bold transition"
-            >
-              Merge PDF
-            </a>
-
-            <a
-              href="/image-to-pdf"
-              className="bg-white border border-gray-300 hover:border-cyan-500 px-10 py-5 rounded-2xl text-lg font-bold text-gray-800 transition"
-            >
-              Image to PDF
-            </a>
-          </div>
         </div>
       </section>
 
@@ -118,8 +101,31 @@ export default function Home() {
       </section>
 
       {/* TOOL GRID */}
-      <section className="py-20 px-4">
+      <section
+        id="explore-tools"
+        className="py-20 px-4 "
+      >
         <div className="max-w-7xl mx-auto">
+          {/* SECTION HEADER */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
+              🚀 Explore PDF Tools
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6">
+              Powerful PDF
+              <br />
+              Tools in One Place
+            </h2>
+
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Access fast, secure and easy-to-use
+              PDF tools for merging, splitting,
+              compressing and converting files.
+            </p>
+          </div>
+
+          {/* TOOL CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tools.map((tool) => (
               <ToolCard
@@ -148,6 +154,7 @@ export default function Home() {
             </p>
           </div>
 
+          {/* FEATURES GRID */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* FAST */}
             <div className="bg-white rounded-3xl border border-gray-200 p-10 hover:shadow-2xl transition">
