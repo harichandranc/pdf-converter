@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Navbar() {
+
   const [menuOpen, setMenuOpen] =
     useState(false);
 
@@ -13,22 +14,26 @@ export default function Navbar() {
 
   const router = useRouter();
 
+  // ORGANIZE PDF
   const organizeTools = [
     {
       name: "Merge PDF",
       href: "/merge-pdf",
       icon: "📚",
     },
+
     {
       name: "Split PDF",
       href: "/split-pdf",
       icon: "✂️",
     },
+
     {
       name: "Rotate PDF",
       href: "/rotate-pdf",
       icon: "🔄",
     },
+
     {
       name: "Delete PDF Pages",
       href: "/delete-pdf",
@@ -36,35 +41,59 @@ export default function Navbar() {
     },
   ];
 
+  // CONVERT PDF
   const convertTools = [
     {
       name: "Image to PDF",
       href: "/image-to-pdf",
       icon: "🖼️",
     },
+
     {
       name: "PDF to JPG",
       href: "/pdf-to-jpg",
       icon: "📄",
     },
+
     {
       name: "Word to PDF",
       href: "/word-to-pdf",
       icon: "📝",
     },
+
     {
       name: "PDF to Word",
       href: "/pdf-to-word",
       icon: "📘",
     },
+
+    {
+      name: "Excel to PDF",
+      href: "/excel-to-pdf",
+      icon: "📊",
+    },
+
+    {
+      name: "Excel to CSV",
+      href: "/excel-to-csv",
+      icon: "📈",
+    },
+
+    {
+      name: "PPT to PDF",
+      href: "/ppt-to-pdf",
+      icon: "📽️",
+    },
   ];
 
+  // SECURITY
   const securityTools = [
     {
       name: "Protect PDF",
       href: "/protect-pdf",
       icon: "🔒",
     },
+
     {
       name: "Unlock PDF",
       href: "/unlock-pdf",
@@ -72,6 +101,7 @@ export default function Navbar() {
     },
   ];
 
+  // OPTIMIZE
   const optimizeTools = [
     {
       name: "Compress PDF",
@@ -81,33 +111,44 @@ export default function Navbar() {
   ];
 
   // SCROLL FUNCTION
-  const goToToolsSection = () => {
-    router.push("/");
+  const goToToolsSection =
+    () => {
 
-    setTimeout(() => {
-      const section =
-        document.getElementById(
-          "explore-tools"
-        );
+      router.push("/");
 
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 300);
-  };
+      setTimeout(() => {
+
+        const section =
+          document.getElementById(
+            "explore-tools"
+          );
+
+        if (section) {
+
+          section.scrollIntoView({
+            behavior:
+              "smooth",
+            block:
+              "start",
+          });
+        }
+
+      }, 300);
+    };
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+
         {/* LOGO */}
         <Link
           href="/"
           className="flex items-center"
         >
+
           <div>
+
             <h1 className="text-2xl font-extrabold text-gray-900 leading-none">
               PDF Converter
             </h1>
@@ -120,6 +161,7 @@ export default function Navbar() {
 
         {/* DESKTOP NAV */}
         <nav className="hidden lg:flex items-center gap-8">
+
           {/* HOME */}
           <Link
             href="/"
@@ -128,10 +170,13 @@ export default function Navbar() {
             Home
           </Link>
 
-          {/* PDF TOOLS DROPDOWN */}
+          {/* PDF TOOLS */}
           <div className="relative group">
+
             <button className="flex items-center gap-2 text-gray-700 hover:text-cyan-500 font-medium transition">
+
               PDF Tools
+
               <span className="text-sm">
                 ▼
               </span>
@@ -139,15 +184,20 @@ export default function Navbar() {
 
             {/* DROPDOWN */}
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <div className="w-[900px] bg-white rounded-3xl border border-gray-200 shadow-2xl p-8">
+
+              <div className="w-[1100px] bg-white rounded-3xl border border-gray-200 shadow-2xl p-8">
+
                 <div className="grid grid-cols-4 gap-8">
+
                   {/* ORGANIZE */}
                   <div>
+
                     <h3 className="text-lg font-bold text-gray-900 mb-5">
                       📚 Organize PDF
                     </h3>
 
                     <div className="space-y-3">
+
                       {organizeTools.map(
                         (tool) => (
                           <Link
@@ -155,6 +205,7 @@ export default function Navbar() {
                             href={tool.href}
                             className="flex items-center gap-3 p-3 rounded-2xl hover:bg-cyan-50 transition"
                           >
+
                             <span className="text-2xl">
                               {tool.icon}
                             </span>
@@ -170,11 +221,13 @@ export default function Navbar() {
 
                   {/* CONVERT */}
                   <div>
+
                     <h3 className="text-lg font-bold text-gray-900 mb-5">
                       🔄 Convert PDF
                     </h3>
 
                     <div className="space-y-3">
+
                       {convertTools.map(
                         (tool) => (
                           <Link
@@ -182,6 +235,7 @@ export default function Navbar() {
                             href={tool.href}
                             className="flex items-center gap-3 p-3 rounded-2xl hover:bg-cyan-50 transition"
                           >
+
                             <span className="text-2xl">
                               {tool.icon}
                             </span>
@@ -197,11 +251,13 @@ export default function Navbar() {
 
                   {/* OPTIMIZE */}
                   <div>
+
                     <h3 className="text-lg font-bold text-gray-900 mb-5">
                       ⚡ Optimize PDF
                     </h3>
 
                     <div className="space-y-3">
+
                       {optimizeTools.map(
                         (tool) => (
                           <Link
@@ -209,6 +265,7 @@ export default function Navbar() {
                             href={tool.href}
                             className="flex items-center gap-3 p-3 rounded-2xl hover:bg-cyan-50 transition"
                           >
+
                             <span className="text-2xl">
                               {tool.icon}
                             </span>
@@ -224,11 +281,13 @@ export default function Navbar() {
 
                   {/* SECURITY */}
                   <div>
+
                     <h3 className="text-lg font-bold text-gray-900 mb-5">
                       🔒 Security
                     </h3>
 
                     <div className="space-y-3">
+
                       {securityTools.map(
                         (tool) => (
                           <Link
@@ -236,6 +295,7 @@ export default function Navbar() {
                             href={tool.href}
                             className="flex items-center gap-3 p-3 rounded-2xl hover:bg-cyan-50 transition"
                           >
+
                             <span className="text-2xl">
                               {tool.icon}
                             </span>
@@ -272,21 +332,37 @@ export default function Navbar() {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
+
+          {/* PLAY STORE */}
+          <a
+            href="https://play.google.com/store/apps/details?id=com.chtechgiant.everything_converter&pcampaignid=web_share"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex bg-green-500 hover:bg-green-400 text-black px-5 py-3 rounded-xl font-bold transition"
+          >
+            📱 Play Store
+          </a>
+
           {/* ALL TOOLS */}
           <button
-            onClick={goToToolsSection}
+            onClick={
+              goToToolsSection
+            }
             className="hidden md:flex bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-3 rounded-xl font-bold transition"
           >
             All Tools
           </button>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE MENU */}
           <button
             onClick={() =>
-              setMenuOpen(!menuOpen)
+              setMenuOpen(
+                !menuOpen
+              )
             }
             className="lg:hidden w-12 h-12 rounded-xl border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition"
           >
+
             {menuOpen ? (
               <span className="text-2xl">
                 ✕
@@ -302,20 +378,25 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       {menuOpen && (
+
         <div className="lg:hidden border-t border-gray-200 bg-white">
+
           <div className="max-w-7xl mx-auto px-4 py-6">
+
             {/* HOME */}
             <Link
               href="/"
               onClick={() =>
-                setMenuOpen(false)
+                setMenuOpen(
+                  false
+                )
               }
               className="block py-4 text-lg font-semibold text-gray-800"
             >
               🏠 Home
             </Link>
 
-            {/* MOBILE PDF TOOLS */}
+            {/* PDF TOOLS */}
             <button
               onClick={() =>
                 setPdfMenuOpen(
@@ -324,6 +405,7 @@ export default function Navbar() {
               }
               className="w-full flex items-center justify-between py-4 text-lg font-semibold text-gray-800"
             >
+
               <span>
                 🛠️ PDF Tools
               </span>
@@ -337,21 +419,27 @@ export default function Navbar() {
 
             {/* SUB MENU */}
             {pdfMenuOpen && (
+
               <div className="pb-4 space-y-3 flex flex-col items-center text-center">
+
                 {[
                   ...organizeTools,
                   ...convertTools,
                   ...optimizeTools,
                   ...securityTools,
                 ].map((tool) => (
+
                   <Link
                     key={tool.name}
                     href={tool.href}
                     onClick={() =>
-                      setMenuOpen(false)
+                      setMenuOpen(
+                        false
+                      )
                     }
                     className="flex items-center justify-center gap-3 py-3 text-gray-700 hover:text-cyan-500 transition w-full"
                   >
+
                     <span className="text-xl">
                       {tool.icon}
                     </span>
@@ -364,11 +452,23 @@ export default function Navbar() {
               </div>
             )}
 
+            {/* PLAY STORE */}
+            <a
+              href="https://play.google.com/store/apps/details?id=com.chtechgiant.everything_converter&pcampaignid=web_share"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block py-4 text-lg font-semibold text-gray-800"
+            >
+              📱 Play Store
+            </a>
+
             {/* ABOUT */}
             <Link
               href="/about"
               onClick={() =>
-                setMenuOpen(false)
+                setMenuOpen(
+                  false
+                )
               }
               className="block py-4 text-lg font-semibold text-gray-800"
             >
@@ -379,7 +479,9 @@ export default function Navbar() {
             <Link
               href="/privacy-policy"
               onClick={() =>
-                setMenuOpen(false)
+                setMenuOpen(
+                  false
+                )
               }
               className="block py-4 text-lg font-semibold text-gray-800"
             >
@@ -389,7 +491,11 @@ export default function Navbar() {
             {/* ALL TOOLS */}
             <button
               onClick={() => {
-                setMenuOpen(false);
+
+                setMenuOpen(
+                  false
+                );
+
                 goToToolsSection();
               }}
               className="w-full mt-5 bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-4 rounded-2xl font-bold transition"

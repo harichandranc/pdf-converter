@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import ToolCard from "./ToolCard";
 
 export default function CategoryTabs() {
+
   const [activeTab, setActiveTab] =
     useState("All");
 
@@ -31,6 +32,8 @@ export default function CategoryTabs() {
   ];
 
   const tools = [
+
+    // ORGANIZE PDF
     {
       title: "Merge PDF",
       description:
@@ -39,6 +42,7 @@ export default function CategoryTabs() {
       href: "/merge-pdf",
       category: "Organize PDF",
     },
+
     {
       title: "Split PDF",
       description:
@@ -47,6 +51,7 @@ export default function CategoryTabs() {
       href: "/split-pdf",
       category: "Organize PDF",
     },
+
     {
       title: "Rotate PDF",
       description:
@@ -55,6 +60,7 @@ export default function CategoryTabs() {
       href: "/rotate-pdf",
       category: "Organize PDF",
     },
+
     {
       title: "Delete PDF Pages",
       description:
@@ -63,6 +69,8 @@ export default function CategoryTabs() {
       href: "/delete-pdf",
       category: "Organize PDF",
     },
+
+    // CONVERT PDF
     {
       title: "Image to PDF",
       description:
@@ -71,6 +79,7 @@ export default function CategoryTabs() {
       href: "/image-to-pdf",
       category: "Convert PDF",
     },
+
     {
       title: "PDF to JPG",
       description:
@@ -79,6 +88,7 @@ export default function CategoryTabs() {
       href: "/pdf-to-jpg",
       category: "Convert PDF",
     },
+
     {
       title: "Word to PDF",
       description:
@@ -87,6 +97,7 @@ export default function CategoryTabs() {
       href: "/word-to-pdf",
       category: "Convert PDF",
     },
+
     {
       title: "PDF to Word",
       description:
@@ -95,6 +106,17 @@ export default function CategoryTabs() {
       href: "/pdf-to-word",
       category: "Convert PDF",
     },
+
+    {
+      title: "Excel to PDF",
+      description:
+        "Convert Excel spreadsheets into professional PDF documents.",
+      icon: "📊",
+      href: "/excel-to-pdf",
+      category: "Convert PDF",
+    },
+
+    // OPTIMIZE PDF
     {
       title: "Compress PDF",
       description:
@@ -103,6 +125,8 @@ export default function CategoryTabs() {
       href: "/compress-pdf",
       category: "Optimize PDF",
     },
+
+    // SECURITY
     {
       title: "Protect PDF",
       description:
@@ -111,6 +135,7 @@ export default function CategoryTabs() {
       href: "/protect-pdf",
       category: "Security",
     },
+
     {
       title: "Unlock PDF",
       description:
@@ -122,21 +147,30 @@ export default function CategoryTabs() {
   ];
 
   // FILTER TOOLS
-  const filteredTools = useMemo(() => {
-    if (activeTab === "All") {
-      return tools;
-    }
+  const filteredTools =
+    useMemo(() => {
 
-    return tools.filter(
-      (tool) =>
-        tool.category === activeTab
-    );
-  }, [activeTab]);
+      if (
+        activeTab === "All"
+      ) {
+
+        return tools;
+      }
+
+      return tools.filter(
+        (tool) =>
+          tool.category ===
+          activeTab
+      );
+
+    }, [activeTab]);
 
   return (
     <section className="py-10">
+
       {/* HEADING */}
       <div className="text-center mb-10">
+
         <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-6">
           🚀 PDF Categories
         </div>
@@ -154,15 +188,20 @@ export default function CategoryTabs() {
 
       {/* TABS */}
       <div className="flex flex-wrap justify-center gap-4 mb-14">
+
         {tabs.map((tab) => {
+
           const isActive =
-            activeTab === tab.name;
+            activeTab ===
+            tab.name;
 
           return (
             <button
               key={tab.name}
               onClick={() =>
-                setActiveTab(tab.name)
+                setActiveTab(
+                  tab.name
+                )
               }
               className={`group relative overflow-hidden px-7 py-4 rounded-2xl border font-semibold text-lg transition-all duration-300 ${
                 isActive
@@ -170,6 +209,7 @@ export default function CategoryTabs() {
                   : "bg-white text-gray-700 border-gray-300 hover:border-cyan-400 hover:text-cyan-600 hover:shadow-lg"
               }`}
             >
+
               {/* GLOW */}
               {!isActive && (
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-cyan-50 transition duration-300"></div>
@@ -177,11 +217,14 @@ export default function CategoryTabs() {
 
               {/* CONTENT */}
               <div className="relative flex items-center gap-3">
+
                 <span className="text-2xl">
                   {tab.icon}
                 </span>
 
-                <span>{tab.name}</span>
+                <span>
+                  {tab.name}
+                </span>
               </div>
             </button>
           );
@@ -190,15 +233,20 @@ export default function CategoryTabs() {
 
       {/* TOOL GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {filteredTools.map((tool) => (
-          <ToolCard
-            key={tool.title}
-            title={tool.title}
-            description={tool.description}
-            icon={tool.icon}
-            href={tool.href}
-          />
-        ))}
+
+        {filteredTools.map(
+          (tool) => (
+            <ToolCard
+              key={tool.title}
+              title={tool.title}
+              description={
+                tool.description
+              }
+              icon={tool.icon}
+              href={tool.href}
+            />
+          )
+        )}
       </div>
     </section>
   );

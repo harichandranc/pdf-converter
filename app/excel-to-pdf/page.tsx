@@ -8,7 +8,7 @@ import {
 
 import BannerAd from "@/components/BannerAd";
 
-export default function WordToPDFPage() {
+export default function ExcelToPDFPage() {
 
   const [file, setFile] =
     useState<File | null>(null);
@@ -64,7 +64,7 @@ export default function WordToPDFPage() {
 
   // HANDLE FILE
   const handleFile =
-    async (
+    (
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
 
@@ -93,14 +93,21 @@ export default function WordToPDFPage() {
       }, 500);
     };
 
-  // CONVERT WORD TO PDF
+  // REMOVE FILE
+  const removeFile =
+    () => {
+
+      setFile(null);
+    };
+
+  // CONVERT
   const convertToPDF =
     async () => {
 
       if (!file) {
 
         alert(
-          "Select Word file"
+          "Select Excel file"
         );
 
         return;
@@ -118,20 +125,30 @@ export default function WordToPDFPage() {
           file
         );
 
-        // VPS API
         const response =
           await fetch(
-            "http://147.93.110.58:3000/convert/word-to-pdf",
+            "http://147.93.110.58:3000/convert/excel-to-pdf",
             {
               method: "POST",
               body: formData,
             }
           );
 
+        if (!response.ok) {
+
+          throw new Error(
+            `Server Error ${response.status}`
+          );
+        }
+
         const data =
           await response.json();
 
-        if (!data.success) {
+        console.log(data);
+
+        if (
+          !data.success
+        ) {
 
           throw new Error(
             data.error ||
@@ -139,28 +156,24 @@ export default function WordToPDFPage() {
           );
         }
 
-        // DOWNLOAD PDF
-        const link =
-          document.createElement(
-            "a"
-          );
-
-        link.href =
+        let downloadUrl =
           data.url;
 
-        link.setAttribute(
-          "download",
-          "converted.pdf"
-        );
+        if (
+          downloadUrl &&
+          !downloadUrl.startsWith(
+            "http"
+          )
+        ) {
 
-        document.body.appendChild(
-          link
-        );
+          downloadUrl =
+            `http://147.93.110.58:3000${downloadUrl}`;
+        }
 
-        link.click();
-
-        document.body.removeChild(
-          link
+        // DOWNLOAD
+        window.open(
+          downloadUrl,
+          "_blank"
         );
 
       } catch (error) {
@@ -170,7 +183,9 @@ export default function WordToPDFPage() {
         );
 
         alert(
-          "Word to PDF conversion failed"
+          error instanceof Error
+            ? error.message
+            : "Conversion failed"
         );
 
       } finally {
@@ -185,64 +200,59 @@ export default function WordToPDFPage() {
       {/* HERO */}
       <section className="relative overflow-hidden py-24 px-4">
 
-        {/* BACKGROUND */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
+        {/* BG */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full blur-3xl opacity-30"></div>
 
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="relative max-w-5xl mx-auto">
 
           {/* HEADER */}
           <div className="text-center mb-14">
 
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
-              📝 Smart Word Converter
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold mb-8">
+              📊 Smart Excel Converter
             </div>
 
             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
-              Convert Word
-              <br />
-              to PDF
+              Excel To PDF
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Convert DOC and DOCX files into
-              professional PDF documents
-              instantly with original layout
-              preserved.
+              Convert Excel spreadsheets into
+              professional PDF documents instantly.
             </p>
           </div>
 
-          {/* MAIN BOX */}
+          {/* MAIN */}
           <div className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 md:p-12">
 
             {/* FILE PICKER */}
             <label
-              htmlFor="word-upload"
-              className="border-2 border-dashed border-cyan-300 hover:border-cyan-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
+              htmlFor="excel-upload"
+              className="border-2 border-dashed border-green-300 hover:border-green-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
             >
 
               <div className="text-7xl mb-6">
-                📄
+                📗
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Upload Word File
+                Upload Excel File
               </h2>
 
               <p className="text-gray-500 text-lg text-center mb-8">
-                Select DOC or DOCX file to
-                convert into PDF
+                Select XLS or XLSX file to convert
               </p>
 
-              <div className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
-                Choose File
+              <div className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
+                Choose Excel File
               </div>
 
               <input
-                id="word-upload"
+                id="excel-upload"
                 type="file"
-                accept=".doc,.docx"
+                accept=".xls,.xlsx"
                 onChange={
                   handleFile
                 }
@@ -255,7 +265,7 @@ export default function WordToPDFPage() {
               <BannerAd />
             </div>
 
-            {/* FILE INFO */}
+            {/* REVIEW */}
             {file && (
               <div
                 ref={reviewRef}
@@ -265,53 +275,45 @@ export default function WordToPDFPage() {
                 {/* CARD */}
                 <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8">
 
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  <div className="flex flex-col gap-8">
 
-                    {/* LEFT */}
-                    <div className="flex items-center gap-5">
+                    {/* REMOVE */}
+                    <div className="flex justify-end">
 
-                      {/* ICON */}
-                      <div className="w-24 h-24 rounded-3xl bg-blue-100 flex items-center justify-center text-5xl flex-shrink-0">
-                        📝
-                      </div>
-
-                      {/* INFO */}
-                      <div>
-
-                        <h3 className="text-3xl font-bold text-gray-900 break-all mb-3">
-                          {
-                            file.name
-                          }
-                        </h3>
-
-                        <p className="text-gray-600 text-lg">
-                          {(
-                            file.size /
-                            1024 /
-                            1024
-                          ).toFixed(
-                            2
-                          )}{" "}
-                          MB
-                        </p>
-                      </div>
+                      <button
+                        onClick={
+                          removeFile
+                        }
+                        className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold"
+                      >
+                        Remove File
+                      </button>
                     </div>
 
-                    {/* STATUS */}
-                    <div className="bg-cyan-100 text-cyan-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
-                      Ready
+                    {/* FILE INFO */}
+                    <div>
+
+                      <h3 className="text-3xl font-bold text-gray-900 break-all mb-3">
+                        {
+                          file.name
+                        }
+                      </h3>
+
+                      <p className="text-gray-600 text-lg mb-6">
+                        {(
+                          file.size /
+                          1024 /
+                          1024
+                        ).toFixed(
+                          2
+                        )}{" "}
+                        MB
+                      </p>
+
+                      <div className="bg-green-100 text-green-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
+                        Ready
+                      </div>
                     </div>
-                  </div>
-
-                  {/* INFO BOX */}
-                  <div className="mt-8 bg-cyan-50 border border-cyan-100 rounded-2xl p-5">
-
-                    <p className="text-cyan-800 font-medium leading-relaxed">
-                      💡 Original formatting,
-                      tables, images and layout
-                      will be preserved during
-                      conversion.
-                    </p>
                   </div>
                 </div>
 
@@ -327,7 +329,7 @@ export default function WordToPDFPage() {
                 >
                   {loading
                     ? "Converting..."
-                    : "Convert to PDF"}
+                    : "Convert To PDF"}
                 </button>
               </div>
             )}

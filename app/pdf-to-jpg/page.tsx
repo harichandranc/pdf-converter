@@ -1,123 +1,265 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import BannerAd from "@/components/BannerAd";
 
 export default function PdfToJpgPage() {
-  const [images, setImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  const handleFile = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    try {
-      setLoading(true);
-      setImages([]);
+  const [images, setImages] =
+    useState<string[]>([]);
 
-      const file = e.target.files?.[0];
+  const [loading, setLoading] =
+    useState(false);
 
-      if (!file) {
-        setLoading(false);
-        return;
-      }
+  const reviewRef =
+    useRef<HTMLDivElement | null>(
+      null
+    );
 
-      const pdfjsLib = await import("pdfjs-dist");
+  // SOCIAL BAR AD
+  useEffect(() => {
 
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
-          import.meta.url
-        ).toString();
+    const existingScript =
+      document.getElementById(
+        "adsterra-social-bar"
+      );
 
-      const arrayBuffer =
-        await file.arrayBuffer();
-
-      const pdf =
-        await pdfjsLib.getDocument({
-          data: arrayBuffer,
-        }).promise;
-
-      const outputImages: string[] = [];
-
-      for (
-        let i = 1;
-        i <= pdf.numPages;
-        i++
-      ) {
-        const page = await pdf.getPage(i);
-
-        const viewport =
-          page.getViewport({
-            scale: 2,
-          });
-
-        const canvas =
-          document.createElement("canvas");
-
-        const context =
-          canvas.getContext("2d");
-
-        if (!context) continue;
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        await page.render({
-          canvasContext: context,
-          viewport,
-        }).promise;
-
-        outputImages.push(
-          canvas.toDataURL(
-            "image/jpeg",
-            1.0
-          )
-        );
-      }
-
-      setImages(outputImages);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to convert PDF");
-    } finally {
-      setLoading(false);
+    if (existingScript) {
+      existingScript.remove();
     }
-  };
 
-  const downloadImage = (
-    image: string,
-    index: number
-  ) => {
-    const link =
-      document.createElement("a");
+    const script =
+      document.createElement("script");
 
-    link.href = image;
-    link.download = `page-${
-      index + 1
-    }.jpg`;
+    script.id =
+      "adsterra-social-bar";
 
-    link.click();
-  };
+    script.src =
+      "//pl26710309.profitableratecpm.com/82aa08359e3c52e80c2b278ef851b22c/invoke.js";
 
-  const downloadAll = () => {
-    images.forEach((image, index) => {
-      setTimeout(() => {
-        downloadImage(image, index);
-      }, index * 300);
-    });
-  };
+    script.async = true;
+
+    document.body.appendChild(
+      script
+    );
+
+    return () => {
+
+      const oldScript =
+        document.getElementById(
+          "adsterra-social-bar"
+        );
+
+      if (oldScript) {
+        oldScript.remove();
+      }
+    };
+
+  }, []);
+
+  // HANDLE FILE
+  const handleFile =
+    async (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+
+      try {
+
+        setLoading(true);
+
+        setImages([]);
+
+        const file =
+          e.target.files?.[0];
+
+        if (!file) {
+
+          setLoading(false);
+
+          return;
+        }
+
+        const pdfjsLib =
+          await import(
+            "pdfjs-dist"
+          );
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          new URL(
+            "pdfjs-dist/build/pdf.worker.min.mjs",
+            import.meta.url
+          ).toString();
+
+        const arrayBuffer =
+          await file.arrayBuffer();
+
+        const pdf =
+          await pdfjsLib.getDocument(
+            {
+              data:
+                arrayBuffer,
+            }
+          ).promise;
+
+        const outputImages:
+          string[] = [];
+
+        for (
+          let i = 1;
+          i <= pdf.numPages;
+          i++
+        ) {
+
+          const page =
+            await pdf.getPage(
+              i
+            );
+
+          const viewport =
+            page.getViewport(
+              {
+                scale: 2,
+              }
+            );
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+          const context =
+            canvas.getContext(
+              "2d"
+            );
+
+          if (!context)
+            continue;
+
+          canvas.width =
+            viewport.width;
+
+          canvas.height =
+            viewport.height;
+
+          await page.render(
+            {
+              canvasContext:
+                context,
+              viewport,
+            }
+          ).promise;
+
+          outputImages.push(
+            canvas.toDataURL(
+              "image/jpeg",
+              1.0
+            )
+          );
+        }
+
+        setImages(
+          outputImages
+        );
+
+        // AUTO SCROLL
+        setTimeout(() => {
+
+          reviewRef.current?.scrollIntoView(
+            {
+              behavior:
+                "smooth",
+              block:
+                "start",
+            }
+          );
+
+        }, 500);
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        alert(
+          "Failed to convert PDF"
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+  // DOWNLOAD SINGLE
+  const downloadImage =
+    (
+      image: string,
+      index: number
+    ) => {
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+      link.href =
+        image;
+
+      link.download =
+        `page-${
+          index + 1
+        }.jpg`;
+
+      link.click();
+    };
+
+  // DOWNLOAD ALL
+  const downloadAll =
+    () => {
+
+      images.forEach(
+        (
+          image,
+          index
+        ) => {
+
+          setTimeout(
+            () => {
+
+              downloadImage(
+                image,
+                index
+              );
+
+            },
+            index * 300
+          );
+        }
+      );
+    };
 
   return (
     <main className="bg-[#f7f7fb] min-h-screen">
+
       {/* HERO */}
       <section className="relative overflow-hidden py-24 px-4">
-        {/* BACKGROUND */}
+
+        {/* BG */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="relative max-w-6xl mx-auto">
+
           {/* HEADER */}
           <div className="text-center mb-14">
+
             <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
               🖼️ Fast PDF Image Converter
             </div>
@@ -137,7 +279,9 @@ export default function PdfToJpgPage() {
 
           {/* UPLOAD BOX */}
           <div className="bg-white rounded-3xl border border-gray-200 shadow-xl p-10 max-w-4xl mx-auto">
+
             <div className="border-2 border-dashed border-cyan-300 rounded-3xl p-14 text-center hover:border-cyan-500 transition">
+
               <div className="text-7xl mb-6">
                 📄
               </div>
@@ -152,17 +296,23 @@ export default function PdfToJpgPage() {
               </p>
 
               <label className="inline-flex items-center justify-center bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl cursor-pointer transition text-lg">
+
                 Choose PDF
+
                 <input
                   type="file"
                   accept="application/pdf"
-                  onChange={handleFile}
+                  onChange={
+                    handleFile
+                  }
                   className="hidden"
                 />
               </label>
 
+              {/* LOADING */}
               {loading && (
                 <div className="mt-8">
+
                   <div className="w-14 h-14 border-4 border-cyan-200 border-t-cyan-600 rounded-full animate-spin mx-auto"></div>
 
                   <p className="mt-4 text-cyan-700 font-semibold text-lg">
@@ -171,46 +321,74 @@ export default function PdfToJpgPage() {
                 </div>
               )}
             </div>
+
+            {/* BANNER AD */}
+            <div className="mt-10">
+              <BannerAd />
+            </div>
           </div>
         </div>
       </section>
 
       {/* RESULTS */}
-      {images.length > 0 && (
-        <section className="pb-24 px-4">
+      {images.length >
+        0 && (
+        <section
+          ref={reviewRef}
+          className="pb-24 px-4"
+        >
+
           <div className="max-w-7xl mx-auto">
+
             {/* TOP BAR */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+
               <div>
+
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
                   Converted Images
                 </h2>
 
                 <p className="text-gray-600 text-lg">
-                  {images.length} pages
-                  converted successfully
+                  {
+                    images.length
+                  }{" "}
+                  pages converted successfully
                 </p>
               </div>
 
               <button
-                onClick={downloadAll}
+                onClick={
+                  downloadAll
+                }
                 className="bg-black hover:opacity-90 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg"
               >
                 Download All JPGs
               </button>
             </div>
 
-            {/* IMAGE GRID */}
+            {/* GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
               {images.map(
-                (image, index) => (
+                (
+                  image,
+                  index
+                ) => (
                   <div
-                    key={index}
+                    key={
+                      index
+                    }
                     className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-lg hover:shadow-2xl transition"
                   >
+
+                    {/* IMAGE */}
                     <div className="aspect-[3/4] bg-gray-100 overflow-hidden">
+
                       <img
-                        src={image}
+                        src={
+                          image
+                        }
                         alt={`Page ${
                           index + 1
                         }`}
@@ -218,10 +396,14 @@ export default function PdfToJpgPage() {
                       />
                     </div>
 
+                    {/* INFO */}
                     <div className="p-6">
+
                       <div className="flex items-center justify-between mb-5">
+
                         <h3 className="text-2xl font-bold text-gray-900">
-                          Page {index + 1}
+                          Page{" "}
+                          {index + 1}
                         </h3>
 
                         <div className="bg-cyan-100 text-cyan-700 px-4 py-1 rounded-full font-semibold text-sm">
@@ -229,6 +411,7 @@ export default function PdfToJpgPage() {
                         </div>
                       </div>
 
+                      {/* BUTTON */}
                       <button
                         onClick={() =>
                           downloadImage(

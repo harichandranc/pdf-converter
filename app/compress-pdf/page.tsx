@@ -6,12 +6,15 @@ import {
   useState,
 } from "react";
 
-import { PDFDocument } from "pdf-lib";
 import BannerAd from "@/components/BannerAd";
 
 export default function CompressPDFPage() {
+
   const [file, setFile] =
     useState<File | null>(null);
+
+  const [thumbnail, setThumbnail] =
+    useState("");
 
   const [beforeSize, setBeforeSize] =
     useState("");
@@ -19,8 +22,11 @@ export default function CompressPDFPage() {
   const [afterSize, setAfterSize] =
     useState("");
 
-  const [targetSize, setTargetSize] =
-    useState("1");
+  const [savedPercent, setSavedPercent] =
+    useState("");
+
+  const [compressionLevel, setCompressionLevel] =
+    useState("medium");
 
   const [loading, setLoading] =
     useState(false);
@@ -30,8 +36,9 @@ export default function CompressPDFPage() {
       null
     );
 
-  // FORCE SOCIAL BAR AD LOAD
+  // SOCIAL BAR AD
   useEffect(() => {
+
     const existingScript =
       document.getElementById(
         "adsterra-social-bar"
@@ -52,9 +59,12 @@ export default function CompressPDFPage() {
 
     script.async = true;
 
-    document.body.appendChild(script);
+    document.body.appendChild(
+      script
+    );
 
     return () => {
+
       const oldScript =
         document.getElementById(
           "adsterra-social-bar"
@@ -64,10 +74,14 @@ export default function CompressPDFPage() {
         oldScript.remove();
       }
     };
+
   }, []);
 
   // FORMAT SIZE
-  const formatSize = (bytes: number) => {
+  const formatSize = (
+    bytes: number
+  ) => {
+
     return (
       (
         bytes /
@@ -78,135 +92,229 @@ export default function CompressPDFPage() {
   };
 
   // HANDLE FILE
-  const handleFile = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedFile =
-      e.target.files?.[0];
+  const handleFile =
+    async (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
 
-    if (!selectedFile) return;
+      const selectedFile =
+        e.target.files?.[0];
 
-    setFile(selectedFile);
+      if (!selectedFile)
+        return;
 
-    setBeforeSize(
-      formatSize(selectedFile.size)
-    );
+      try {
 
-    setAfterSize("");
+        setLoading(true);
 
-    // SCROLL TO REVIEW SECTION
-    setTimeout(() => {
-      reviewRef.current?.scrollIntoView(
-        {
-          behavior: "smooth",
-          block: "start",
+        setFile(
+          selectedFile
+        );
+
+        setBeforeSize(
+          formatSize(
+            selectedFile.size
+          )
+        );
+
+        setAfterSize("");
+        setSavedPercent("");
+
+        // THUMBNAIL
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          selectedFile
+        );
+
+        const response =
+          await fetch(
+            "http://147.93.110.58:3000/pdf/thumbnails",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (
+          data.success &&
+          data.pages?.length > 0
+        ) {
+
+          setThumbnail(
+            data.pages[0]
+              .image
+          );
         }
-      );
-    }, 300);
-  };
+
+        // AUTO SCROLL
+        setTimeout(() => {
+
+          reviewRef.current?.scrollIntoView(
+            {
+              behavior:
+                "smooth",
+              block:
+                "center",
+            }
+          );
+
+        }, 500);
+
+      } catch (error) {
+
+        console.log(
+          error
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
   // COMPRESS PDF
-  const compressPDF = async () => {
-    if (!file) {
-      alert("Select PDF file");
-      return;
-    }
+  const compressPDF =
+    async () => {
 
-    try {
-      setLoading(true);
+      if (!file) {
 
-      const bytes =
-        await file.arrayBuffer();
+        alert(
+          "Select PDF file"
+        );
 
-      const pdf =
-        await PDFDocument.load(bytes);
-
-      // SAVE PDF
-      let compressedBytes =
-        await pdf.save({
-          useObjectStreams: true,
-          addDefaultPage: false,
-        });
-
-      // TARGET SIZE
-      const targetBytes =
-        parseFloat(targetSize) *
-        1024 *
-        1024;
-
-      // SIMPLE COMPRESSION LOOP
-      while (
-        compressedBytes.length >
-          targetBytes &&
-        compressedBytes.length >
-          50000
-      ) {
-        compressedBytes =
-          compressedBytes.slice(
-            0,
-            Math.floor(
-              compressedBytes.length *
-                0.95
-            )
-          );
+        return;
       }
 
-      // AFTER SIZE
-      setAfterSize(
-        formatSize(
-          compressedBytes.length
-        )
-      );
+      try {
 
-      // DOWNLOAD
-      const blob = new Blob(
-        [
-          new Uint8Array(
-            compressedBytes
-          ),
-        ],
-        {
-          type: "application/pdf",
+        setLoading(true);
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          file
+        );
+
+        formData.append(
+          "level",
+          compressionLevel
+        );
+
+        const response =
+          await fetch(
+            "http://147.93.110.58:3000/compress/pdf",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (!data.success) {
+
+          throw new Error(
+            data.error ||
+              "Compression failed"
+          );
         }
-      );
 
-      const url =
-        URL.createObjectURL(blob);
+        // FETCH FILE
+        const compressedFile =
+          await fetch(
+            data.url
+          );
 
-      const a =
-        document.createElement("a");
+        const blob =
+          await compressedFile.blob();
 
-      a.href = url;
+        const compressedSize =
+          blob.size;
 
-      a.download =
-        "compressed.pdf";
+        setAfterSize(
+          formatSize(
+            compressedSize
+          )
+        );
 
-      a.click();
+        // SAVED %
+        const saved =
+          (
+            ((file.size -
+              compressedSize) /
+              file.size) *
+            100
+          ).toFixed(1);
 
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(error);
+        setSavedPercent(
+          saved
+        );
 
-      alert(
-        "Failed to compress PDF"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+        // DOWNLOAD
+        const link =
+          document.createElement(
+            "a"
+          );
+
+        link.href =
+          data.url;
+
+        link.setAttribute(
+          "download",
+          "compressed.pdf"
+        );
+
+        document.body.appendChild(
+          link
+        );
+
+        link.click();
+
+        document.body.removeChild(
+          link
+        );
+
+      } catch (error) {
+
+        console.log(
+          error
+        );
+
+        alert(
+          "Compression failed"
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
   return (
     <main className="bg-[#f7f7fb] min-h-screen">
+
       {/* HERO */}
       <section className="relative overflow-hidden py-24 px-4">
-        {/* BACKGROUND */}
+
+        {/* BG */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="relative max-w-5xl mx-auto">
+
           {/* HEADER */}
           <div className="text-center mb-14">
+
             <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-6 py-3 rounded-full font-semibold mb-8">
               🗜️ Smart PDF Compressor
             </div>
@@ -218,19 +326,20 @@ export default function CompressPDFPage() {
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Reduce PDF file size instantly
-              while maintaining good quality
-              and fast performance.
+              Reduce PDF file size while
+              maintaining quality.
             </p>
           </div>
 
-          {/* MAIN BOX */}
+          {/* MAIN */}
           <div className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 md:p-12">
-            {/* FILE PICKER */}
+
+            {/* UPLOAD */}
             <label
               htmlFor="pdf-upload"
               className="border-2 border-dashed border-cyan-300 hover:border-cyan-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
             >
+
               <div className="text-7xl mb-6">
                 📄
               </div>
@@ -240,8 +349,7 @@ export default function CompressPDFPage() {
               </h2>
 
               <p className="text-gray-500 text-lg text-center mb-8">
-                Select your PDF file to
-                compress size
+                Select PDF file to compress
               </p>
 
               <div className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
@@ -252,106 +360,172 @@ export default function CompressPDFPage() {
                 id="pdf-upload"
                 type="file"
                 accept=".pdf"
-                onChange={handleFile}
+                onChange={
+                  handleFile
+                }
                 className="hidden"
               />
             </label>
 
-            {/* NATIVE BANNER AD */}
+            {/* AD */}
             <div className="mt-10">
               <BannerAd />
             </div>
 
-            {/* FILE REVIEW */}
+            {/* REVIEW */}
             {file && (
               <div
                 ref={reviewRef}
                 className="mt-10"
               >
-                {/* FILE CARD */}
+
                 <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
-                    <div>
+
+                  <div className="flex flex-col lg:flex-row gap-8">
+
+                    {/* THUMB */}
+                    <div className="w-full lg:w-72 flex-shrink-0">
+
+                      {thumbnail && (
+                        <img
+                          src={
+                            thumbnail
+                          }
+                          alt="PDF"
+                          className="w-full rounded-2xl border border-gray-200 shadow-lg"
+                        />
+                      )}
+                    </div>
+
+                    {/* INFO */}
+                    <div className="flex-1">
+
                       <h3 className="text-3xl font-bold text-gray-900 break-all mb-3">
                         {file.name}
                       </h3>
 
-                      <p className="text-gray-600 text-lg">
-                        PDF Ready for
-                        Compression
-                      </p>
-                    </div>
-
-                    <div className="bg-cyan-100 text-cyan-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
-                      Ready
-                    </div>
-                  </div>
-
-                  {/* SIZE GRID */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* BEFORE */}
-                    <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                      <p className="text-gray-500 text-lg mb-3">
-                        Original Size
+                      <p className="text-gray-600 text-lg mb-8">
+                        PDF Ready for Compression
                       </p>
 
-                      <h4 className="text-4xl font-extrabold text-gray-900">
-                        {beforeSize}
-                      </h4>
-                    </div>
+                      {/* SIZE */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-                    {/* AFTER */}
-                    <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                      <p className="text-gray-500 text-lg mb-3">
-                        Compressed Size
-                      </p>
+                        <div className="bg-white border border-gray-200 rounded-2xl p-6">
 
-                      <h4 className="text-4xl font-extrabold text-green-600">
-                        {afterSize ||
-                          "--"}
-                      </h4>
-                    </div>
-                  </div>
+                          <p className="text-gray-500 text-lg mb-3">
+                            Original Size
+                          </p>
 
-                  {/* TARGET */}
-                  <div className="mt-10">
-                    <label className="block text-2xl font-bold text-gray-900 mb-4">
-                      Target Size
-                    </label>
+                          <h4 className="text-4xl font-extrabold text-gray-900">
+                            {
+                              beforeSize
+                            }
+                          </h4>
+                        </div>
 
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="number"
-                        min="0.1"
-                        step="0.1"
-                        value={targetSize}
-                        onChange={(e) =>
-                          setTargetSize(
-                            e.target.value
-                          )
-                        }
-                        className="w-full border border-gray-300 rounded-2xl px-6 py-5 text-xl outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition"
-                      />
+                        <div className="bg-white border border-gray-200 rounded-2xl p-6">
 
-                      <div className="bg-gray-100 px-6 py-5 rounded-2xl font-bold text-gray-700 text-lg">
-                        MB
+                          <p className="text-gray-500 text-lg mb-3">
+                            Compressed Size
+                          </p>
+
+                          <h4 className="text-4xl font-extrabold text-green-600">
+                            {
+                              afterSize ||
+                              "--"
+                            }
+                          </h4>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* INFO BOX */}
-                    <div className="mt-5 bg-cyan-50 border border-cyan-100 rounded-2xl p-5">
-                      <p className="text-cyan-800 font-medium leading-relaxed">
-                        💡 Lower target sizes
-                        may reduce PDF quality.
-                      </p>
+                      {/* LEVELS */}
+                      <div>
+
+                        <label className="block text-2xl font-bold text-gray-900 mb-5">
+                          Compression Level
+                        </label>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                          {[
+                            {
+                              key: "low",
+                              title: "Low",
+                              desc: "Better quality",
+                            },
+                            {
+                              key: "medium",
+                              title: "Medium",
+                              desc: "Balanced size",
+                            },
+                            {
+                              key: "high",
+                              title: "High",
+                              desc: "Maximum compression",
+                            },
+                          ].map(
+                            (
+                              item
+                            ) => (
+                              <button
+                                key={
+                                  item.key
+                                }
+                                onClick={() =>
+                                  setCompressionLevel(
+                                    item.key
+                                  )
+                                }
+                                className={`p-5 rounded-2xl border-2 transition text-left ${
+                                  compressionLevel ===
+                                  item.key
+                                    ? "border-cyan-500 bg-cyan-50"
+                                    : "border-gray-200 bg-white"
+                                }`}
+                              >
+
+                                <h4 className="font-bold text-xl text-gray-900 mb-2">
+                                  {
+                                    item.title
+                                  }
+                                </h4>
+
+                                <p className="text-gray-600">
+                                  {
+                                    item.desc
+                                  }
+                                </p>
+                              </button>
+                            )
+                          )}
+                        </div>
+
+                        {/* SAVED */}
+                        {savedPercent && (
+                          <div className="mt-6 bg-green-50 border border-green-100 rounded-2xl p-5">
+
+                            <p className="text-green-700 font-bold text-xl">
+                              🎉 Saved {
+                                savedPercent
+                              }%
+                              Storage
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* BUTTON */}
                 <button
-                  onClick={compressPDF}
-                  disabled={loading}
+                  onClick={
+                    compressPDF
+                  }
+                  disabled={
+                    loading
+                  }
                   className="w-full mt-10 bg-black hover:opacity-90 disabled:opacity-50 text-white font-bold text-xl py-5 rounded-2xl transition"
                 >
                   {loading
