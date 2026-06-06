@@ -8,10 +8,13 @@ import {
 
 import BannerAd from "@/components/BannerAd";
 
-export default function ExcelToPDFPage() {
+export default function UnlockPDFPage() {
 
   const [file, setFile] =
     useState<File | null>(null);
+
+  const [password, setPassword] =
+    useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -98,16 +101,29 @@ export default function ExcelToPDFPage() {
     () => {
 
       setFile(null);
+
+      setPassword("");
     };
 
-  // CONVERT
-  const convertToPDF =
+  // UNLOCK PDF
+  const unlockPDF =
     async () => {
 
       if (!file) {
 
         alert(
-          "Select Excel file"
+          "Select PDF file"
+        );
+
+        return;
+      }
+
+      if (
+        !password.trim()
+      ) {
+
+        alert(
+          "Enter PDF password"
         );
 
         return;
@@ -125,9 +141,14 @@ export default function ExcelToPDFPage() {
           file
         );
 
+        formData.append(
+          "password",
+          password
+        );
+
         const response =
           await fetch(
-            "http://147.93.110.58:3000/convert/excel-to-pdf",
+            "http://147.93.110.58:3000/pdf/unlock",
             {
               method: "POST",
               body: formData,
@@ -135,6 +156,13 @@ export default function ExcelToPDFPage() {
           );
 
         if (!response.ok) {
+
+          const errorText =
+            await response.text();
+
+          console.log(
+            errorText
+          );
 
           throw new Error(
             `Server Error ${response.status}`
@@ -152,10 +180,11 @@ export default function ExcelToPDFPage() {
 
           throw new Error(
             data.error ||
-              "Conversion failed"
+              "Unlock PDF failed"
           );
         }
 
+        // FIX URL
         let downloadUrl =
           data.url;
 
@@ -185,7 +214,7 @@ export default function ExcelToPDFPage() {
         alert(
           error instanceof Error
             ? error.message
-            : "Conversion failed"
+            : "Unlock PDF failed"
         );
 
       } finally {
@@ -201,26 +230,29 @@ export default function ExcelToPDFPage() {
       <section className="relative overflow-hidden py-24 px-4">
 
         {/* BG */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
 
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-200 rounded-full blur-3xl opacity-30"></div>
 
         <div className="relative max-w-5xl mx-auto">
 
           {/* HEADER */}
           <div className="text-center mb-14">
 
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full font-semibold mb-8">
-              📊 Smart Excel Converter
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-6 py-3 rounded-full font-semibold mb-8">
+              🔓 Smart PDF Unlocker
             </div>
 
             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
-              Excel To PDF
+              Unlock PDF
+              <br />
+              Password Protection
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Convert Excel spreadsheets into
-              professional PDF documents instantly.
+              Remove password protection from
+              your PDF instantly and download
+              unlocked PDF file securely.
             </p>
           </div>
 
@@ -229,30 +261,31 @@ export default function ExcelToPDFPage() {
 
             {/* FILE PICKER */}
             <label
-              htmlFor="excel-upload"
-              className="border-2 border-dashed border-green-300 hover:border-green-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
+              htmlFor="pdf-upload"
+              className="border-2 border-dashed border-yellow-300 hover:border-yellow-500 transition rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer"
             >
 
               <div className="text-7xl mb-6">
-                📗
+                🔓
               </div>
 
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Upload Excel File
+                Upload Locked PDF
               </h2>
 
               <p className="text-gray-500 text-lg text-center mb-8">
-                Select XLS or XLSX file to convert
+                Select password protected PDF
+                file to unlock
               </p>
 
-              <div className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
-                Choose Excel File
+              <div className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-2xl transition text-lg">
+                Choose PDF
               </div>
 
               <input
-                id="excel-upload"
+                id="pdf-upload"
                 type="file"
-                accept=".xls,.xlsx"
+                accept=".pdf"
                 onChange={
                   handleFile
                 }
@@ -310,8 +343,39 @@ export default function ExcelToPDFPage() {
                         MB
                       </p>
 
-                      <div className="bg-green-100 text-green-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
+                      <div className="bg-yellow-100 text-yellow-700 px-6 py-3 rounded-2xl font-bold text-lg w-fit">
                         Ready
+                      </div>
+                    </div>
+
+                    {/* PASSWORD */}
+                    <div>
+
+                      <label className="block text-2xl font-bold text-gray-900 mb-5">
+                        PDF Password
+                      </label>
+
+                      <input
+                        type="password"
+                        placeholder="Enter PDF password"
+                        value={
+                          password
+                        }
+                        onChange={(e) =>
+                          setPassword(
+                            e.target.value
+                          )
+                        }
+                        className="w-full border border-gray-300 rounded-2xl px-6 py-5 text-xl outline-none focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100 transition bg-white"
+                      />
+
+                      {/* INFO */}
+                      <div className="mt-5 bg-yellow-50 border border-yellow-100 rounded-2xl p-5">
+
+                        <p className="text-yellow-800 font-medium leading-relaxed">
+                          💡 Enter the correct password
+                          used to protect this PDF file.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -320,7 +384,7 @@ export default function ExcelToPDFPage() {
                 {/* BUTTON */}
                 <button
                   onClick={
-                    convertToPDF
+                    unlockPDF
                   }
                   disabled={
                     loading
@@ -328,8 +392,8 @@ export default function ExcelToPDFPage() {
                   className="w-full mt-10 bg-black hover:opacity-90 disabled:opacity-50 text-white font-bold text-xl py-5 rounded-2xl transition"
                 >
                   {loading
-                    ? "Converting..."
-                    : "Convert To PDF"}
+                    ? "Unlocking PDF..."
+                    : "Unlock PDF"}
                 </button>
               </div>
             )}
