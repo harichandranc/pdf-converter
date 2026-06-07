@@ -148,7 +148,7 @@ export default function UnlockPDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/unlock",
+            "https://api.pdfconverter.chtechgiant.com/pdf/unlock",
             {
               method: "POST",
               body: formData,
@@ -196,7 +196,7 @@ export default function UnlockPDFPage() {
         ) {
 
           downloadUrl =
-            `http://147.93.110.58:3000${downloadUrl}`;
+            `https://api.pdfconverter.chtechgiant.com${downloadUrl}`;
         }
 
         // DOWNLOAD
