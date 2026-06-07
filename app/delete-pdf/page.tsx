@@ -91,7 +91,7 @@ export default function DeletePDFPagesPage() {
       // VPS THUMBNAILS API
       const response =
         await fetch(
-          "http://147.93.110.58:3000/pdf/thumbnails",
+          "https://api.pdfconverter.chtechgiant.com/pdf/thumbnails",
           {
             method: "POST",
             body: formData,
@@ -200,7 +200,7 @@ export default function DeletePDFPagesPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/delete-pages",
+            "https://api.pdfconverter.chtechgiant.com/pdf/delete-pages",
             {
               method: "POST",
               body: formData,

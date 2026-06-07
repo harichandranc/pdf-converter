@@ -121,7 +121,7 @@ export default function WordToPDFPage() {
         // VPS API
         const response =
           await fetch(
-            "http://147.93.110.58:3000/convert/word-to-pdf",
+            "https://api.pdfconverter.chtechgiant.com/convert/word-to-pdf",
             {
               method: "POST",
               body: formData,

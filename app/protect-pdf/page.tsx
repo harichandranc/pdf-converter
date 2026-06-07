@@ -148,7 +148,7 @@ export default function ProtectPDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/protect",
+            "https://api.pdfconverter.chtechgiant.com/pdf/protect",
             {
               method: "POST",
               body: formData,
@@ -194,7 +194,7 @@ export default function ProtectPDFPage() {
         ) {
 
           downloadUrl =
-            `http://147.93.110.58:3000${downloadUrl}`;
+            `https://api.pdfconverter.chtechgiant.com${downloadUrl}`;
         }
 
         // DOWNLOAD

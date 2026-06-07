@@ -131,7 +131,7 @@ export default function CompressPDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/thumbnails",
+            "https://api.pdfconverter.chtechgiant.com/pdf/thumbnails",
             {
               method: "POST",
               body: formData,
@@ -210,7 +210,7 @@ export default function CompressPDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/compress/pdf",
+            "https://api.pdfconverter.chtechgiant.com/compress/pdf",
             {
               method: "POST",
               body: formData,

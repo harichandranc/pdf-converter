@@ -100,7 +100,7 @@ export default function MergePDFPage() {
         // VPS THUMBNAIL API
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/thumbnails",
+            "https://api.pdfconverter.chtechgiant.com/pdf/thumbnails",
             {
               method: "POST",
               body: formData,
@@ -200,7 +200,7 @@ export default function MergePDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/pdf/merge",
+            "https://api.pdfconverter.chtechgiant.com/pdf/merge",
             {
               method: "POST",
               body: formData,

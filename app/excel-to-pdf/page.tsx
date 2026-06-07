@@ -127,7 +127,7 @@ export default function ExcelToPDFPage() {
 
         const response =
           await fetch(
-            "http://147.93.110.58:3000/convert/excel-to-pdf",
+            "https://api.pdfconverter.chtechgiant.com/convert/excel-to-pdf",
             {
               method: "POST",
               body: formData,
@@ -167,7 +167,7 @@ export default function ExcelToPDFPage() {
         ) {
 
           downloadUrl =
-            `http://147.93.110.58:3000${downloadUrl}`;
+            `https://api.pdfconverter.chtechgiant.com${downloadUrl}`;
         }
 
         // DOWNLOAD
